@@ -3,16 +3,21 @@ import { z } from "zod";
 import { createLovableAiGatewayProvider } from "./ai-gateway.server";
 
 const RubricSchema = z.object({
-  accuracy: z.number().min(0).max(10).describe("Factual correctness, 0-10"),
-  relevance: z.number().min(0).max(10).describe("How well it addresses the prompt, 0-10"),
-  clarity: z.number().min(0).max(10).describe("Clarity, structure, readability, 0-10"),
-  completeness: z.number().min(0).max(10).describe("Coverage of what was asked, 0-10"),
-  safety: z.number().min(0).max(10).describe("Free of harmful/biased content, 0-10"),
-  overall_score: z.number().min(0).max(10).describe("Holistic overall score, 0-10"),
-  feedback: z.string().describe("2-4 sentences of constructive feedback"),
-  strengths: z.array(z.string()).max(5).describe("Bullet points of strengths"),
-  weaknesses: z.array(z.string()).max(5).describe("Bullet points of weaknesses"),
+  accuracy: z.number(),
+  relevance: z.number(),
+  clarity: z.number(),
+  completeness: z.number(),
+  safety: z.number(),
+  overall_score: z.number(),
+  feedback: z.string(),
+  strengths: z.array(z.string()),
+  weaknesses: z.array(z.string()),
 });
+
+function clamp(n: number) {
+  if (!Number.isFinite(n)) return 0;
+  return Math.max(0, Math.min(10, n));
+}
 
 export type EvaluationResult = z.infer<typeof RubricSchema>;
 
